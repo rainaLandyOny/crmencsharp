@@ -1,0 +1,82 @@
+@model IEnumerable<crmcsharp.Models.entity.TicketHisto>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Liste des Tickets";
+}
+
+@functions {
+    public static string GetPriorityColor(string priority)
+    {
+        return priority?.ToLower() switch
+        {
+            "high" => "#e74a3b",
+            "medium" => "#f6c23e",
+            "low" => "#1cc88a",
+            _ => "#858796",
+        };
+    }
+
+    public static string Truncate(string value, int maxLength)
+    {
+        if (string.IsNullOrEmpty(value)) return value;
+        return value.Length <= maxLength ? value : value.Substring(0, maxLength) + "...";
+    }
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Tickets (@Model.Count())</h6>
+            <div>
+                <a asp-action="Index" class="btn btn-sm btn-secondary">Retour au Dashboard</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Description</th>
+                            <th>Priorité</th>
+                            <th>Statut</th>
+                            <th>Date de création</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Subject</td>
+                                <td>@Truncate(item.Description, 50)</td>
+                                <td>
+                                    <span class="badge" style="background-color: @GetPriorityColor(item.Priority)">
+                                        @item.Priority
+                                    </span>
+                                </td>
+                                <td>@item.Status</td>
+                                <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-info">Détails</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.20/i18n/French.json'
+                }
+            });
+        });
+    </script>
+}

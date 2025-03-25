@@ -1,0 +1,54 @@
+@model IEnumerable<crmcsharp.Models.entity.TriggerLeadHisto>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Liste des Leads";
+}
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Leads (@Model.Count())</h6>
+            <a asp-action="Index" class="btn btn-sm btn-secondary">Retour au Dashboard</a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Employee</th>
+                            <th>Téléphone</th>
+                            <th>Date de création</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Employee.Username</td>
+                                <td>@item.Phone</td>
+                                <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                <td>@item.Status</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialisation de DataTables (optionnel)
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.10.20/i18n/French.json'
+                }
+            });
+        });
+    </script>
+}

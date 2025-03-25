@@ -1,95 +1,57 @@
-// using Microsoft.AspNetCore.Mvc;
-// using crmcsharp.Services;
-// using crmcsharp.Models.request;
-// using Microsoft.AspNetCore.Http;
-
-// namespace crmcsharp.Controllers
-// {
-//     public class AccountController : Controller
-//     {
-//         private readonly AccountService _accountService;
-
-//         public AccountController(AccountService accountService)
-//         {
-//             _accountService = accountService;
-//         }
-
-//         // GET: Account/Login
-//         public IActionResult Login()
-//         {
-//             return View();
-//         }
-
-//         [HttpPost]
-//         public async Task<IActionResult> Login(AuthRequest authRequest)
-//         {
-//             var token = await _accountService.Login(authRequest);
-
-//             if (token != null)
-//             {
-//                 Console.WriteLine("token isn't null");
-//                 HttpContext.Session.SetString("AuthToken", token);
-//                 return RedirectToAction("Index", "Home");
-//             }
-//             else
-//             {
-//                 ModelState.AddModelError("", "Invalid username or password.");
-//                 return View();
-//             }
-//         }
-//     }
-// }
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using crmcsharp.Services;
+using crmcsharp.Models.request;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient<AccountService>();
-
-// // Enregistrer le service TicketService
-// builder.Services.AddHttpClient<TicketService>(); // Si TicketService utilise HttpClient
-// // OU
-// builder.Services.AddScoped<TicketService>(); // Si TicketService ne nécessite pas HttpClient
-// builder.Services.AddHttpClient<TicketExpenseService>(); // Si TicketService utilise HttpClient
-// // OU
-// builder.Services.AddScoped<TicketExpenseService>(); // Si TicketService ne nécessite pas HttpClient
-// builder.Services.AddScoped<RateConfigService>();
-// builder.Services.AddScoped<LeadExpenseService>(); // Si TicketService ne nécessite pas HttpClient
-// builder.Services.AddScoped<LeadService>();
-// builder.Services.AddSession(options =>
-// {
-//     options.Cookie.HttpOnly = true; // Sécuriser le cookie
-//     options.Cookie.IsEssential = true; // Important pour le fonctionnement de l'app
-//     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Cookie envoyé uniquement sur HTTPS
-// });
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+namespace crmcsharp.Controllers
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    public class AccountController : Controller
+    {
+        private readonly AccountService _accountService;
+
+        public AccountController(AccountService accountService)
+        {
+            _accountService = accountService;
+        }
+
+        // GET: Account/Login
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(AuthRequest authRequest)
+        {
+            var token = await _accountService.Login(authRequest);
+
+            if (token != null)
+            {
+                Console.WriteLine("token isn't null");
+                HttpContext.Session.SetString("AuthToken", token);
+                return RedirectToAction("Index", "Dashboard");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Invalid username or password.");
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            // Effacer le token de session
+            HttpContext.Session.Remove("AuthToken");
+
+            // Effacer toutes les données de session
+            HttpContext.Session.Clear();
+
+            TempData["Message"] = "Vous avez été déconnecté avec succès.";
+            return RedirectToAction("Login", "Account");
+        }
+    }
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseSession(); // Utilisation de la session
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
-
-app.Run();
-

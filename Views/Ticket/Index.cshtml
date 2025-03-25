@@ -1,0 +1,160 @@
+@model List<crmcsharp.Models.entity.TicketHisto>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Gestion des Tickets";
+}
+
+<style>
+    /* Styles pour tableau clair */
+    .light-card {
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .light-header {
+        background-color: #f8f9fa;
+        color: #495057;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .light-table {
+        background-color: #ffffff;
+        color: #495057;
+    }
+    
+    .light-table thead th {
+        background-color: #f8f9fa;
+        color: #495057;
+        border-bottom: 2px solid #e0e0e0;
+        font-weight: 600;
+    }
+    
+    .light-table tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .light-table tbody tr:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Amélioration de la visibilité */
+    .table-responsive {
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    
+    .card-title {
+        color: #343a40;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mt-4"><i class="fas fa-ticket-alt me-2"></i>Gestion des Tickets</h4>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm mb-4 light-card">
+        <div class="card-header py-3 light-header">
+            <h5 class="mb-0 card-title"><i class="fas fa-list me-2"></i>Liste des tickets</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 light-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag me-1"></i> ID</th>
+                            <th><i class="fas fa-heading me-1"></i> Sujet</th>
+                            <th><i class="fas fa-info-circle me-1"></i> Statut</th>
+                            <th><i class="fas fa-exclamation-triangle me-1"></i> Priorité</th>
+                            <th><i class="fas fa-user-tie me-1"></i> Manager</th>
+                            <th><i class="fas fa-user me-1"></i> Client</th>
+                            <th><i class="fas fa-cogs me-1"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ticket in Model)
+                        {
+                            <tr>
+                                <td class="fw-semibold">#@ticket.Id</td>
+                                <td>@ticket.Subject</td>
+                                <td>
+                                    <span class="badge @GetStatusBadgeClass(ticket.Status)">
+                                        @ticket.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge @GetPriorityBadgeClass(ticket.Priority)">
+                                        @ticket.Priority
+                                    </span>
+                                </td>
+                                <td>@ticket.Manager?.Username</td>
+                                <td>@ticket.Customer?.Name</td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="Details" asp-route-id="@ticket.Id" 
+                                           class="btn btn-sm btn-outline-primary" 
+                                           title="Voir détails">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+
+                                        <form asp-action="Delete" asp-controller="Ticket" method="post" 
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?');">
+                                            <input type="hidden" name="ticketId" value="@ticket.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Ouvert" => "bg-success",
+            "En cours" => "bg-warning text-dark",
+            "Fermé" => "bg-secondary",
+            "En attente" => "bg-info",
+            _ => "bg-primary"
+        };
+    }
+
+    string GetPriorityBadgeClass(string priority)
+    {
+        return priority switch
+        {
+            "Haute" => "bg-danger",
+            "Moyenne" => "bg-warning text-dark",
+            "Basse" => "bg-success",
+            _ => "bg-primary"
+        };
+    }
+}

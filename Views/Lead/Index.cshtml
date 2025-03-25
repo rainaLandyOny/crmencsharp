@@ -1,0 +1,161 @@
+@model List<crmcsharp.Models.entity.TriggerLeadHisto>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Liste des Leads";
+}
+
+<style>
+    /* Styles pour tableau clair */
+    .light-card {
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .light-header {
+        background-color: #f8f9fa;
+        color: #495057;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .light-table {
+        background-color: #ffffff;
+        color: #495057;
+    }
+    
+    .light-table thead th {
+        background-color: #f8f9fa;
+        color: #495057;
+        border-bottom: 2px solid #e0e0e0;
+        font-weight: 600;
+    }
+    
+    .light-table tbody tr {
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .light-table tbody tr:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Amélioration de la visibilité */
+    .table-responsive {
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    
+    .card-title {
+        color: #343a40;
+        font-weight: 600;
+    }
+    
+    /* Styles spécifiques pour les leads */
+    .lead-actions {
+        min-width: 180px;
+    }
+</style>
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mt-4"><i class="fas fa-user-tie me-2"></i>Liste des Leads</h4>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Nouveau Lead
+        </a>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm mb-4 light-card">
+        <div class="card-header py-3 light-header">
+            <h5 class="mb-0 card-title"><i class="fas fa-list me-2"></i>Liste des leads</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 light-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag me-1"></i> ID</th>
+                            <th><i class="fas fa-user me-1"></i> Nom</th>
+                            <th><i class="fas fa-info-circle me-1"></i> Statut</th>
+                            <th><i class="fas fa-phone me-1"></i> Téléphone</th>
+                            <th><i class="fas fa-user-tie me-1"></i> Employé</th>
+                            <th class="lead-actions"><i class="fas fa-cogs me-1"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var lead in Model)
+                        {
+                            <tr>
+                                <td class="fw-semibold">#@lead.Id</td>
+                                <td>@lead.Name</td>
+                                <td>
+                                    <span class="badge @GetStatusBadgeClass(lead.Status)">
+                                        @lead.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="tel:@lead.Phone" class="text-decoration-none">
+                                        <i class="fas fa-phone-alt me-1"></i> @lead.Phone
+                                    </a>
+                                </td>
+                                <td>@lead.Employee.Username</td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="Details" asp-route-id="@lead.Id" 
+                                           class="btn btn-sm btn-outline-primary" 
+                                           title="Voir détails">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        
+                                        <a asp-action="Edit" asp-route-id="@lead.Id" 
+                                           class="btn btn-sm btn-outline-warning" 
+                                           title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <form asp-action="Delete" asp-controller="Lead" method="post" 
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce lead ?');">
+                                            <input type="hidden" name="leadId" value="@lead.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Nouveau" => "bg-primary",
+            "En cours" => "bg-warning text-dark",
+            "Terminé" => "bg-success",
+            "Annulé" => "bg-secondary",
+            _ => "bg-info"
+        };
+    }
+}

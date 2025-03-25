@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using crmcsharp.Models.entity;
 using crmcsharp.Models;
 
 namespace crmcsharp.Controllers;
