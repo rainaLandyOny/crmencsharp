@@ -90,7 +90,7 @@
     </div>
 </div>
 
-<!-- Inclure Chart.js -->
+<!-- Inclure Chart.js et Font Awesome -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     labels: {
                         font: {
                             size: 12,
-                            family: 'Arial'
+                            family: 'Segoe UI'
                         },
                         padding: 20,
                         usePointStyle: true,
@@ -195,8 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Budget',
                 data: budgetAmounts,
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                borderColor: 'rgba(52, 152, 219, 1)',
                 borderWidth: 1
             }]
         },
@@ -208,18 +208,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Montant (€)'
+                        text: 'Montant (€)',
+                        font: {
+                            family: 'Segoe UI'
+                        }
                     },
                     ticks: {
                         callback: function(value) {
                             return value.toLocaleString('fr-FR') + ' €';
+                        },
+                        font: {
+                            family: 'Segoe UI'
                         }
                     }
                 },
                 x: {
                     title: {
                         display: true,
-                        text: 'Mois'
+                        text: 'Mois',
+                        font: {
+                            family: 'Segoe UI'
+                        }
+                    },
+                    ticks: {
+                        font: {
+                            family: 'Segoe UI'
+                        }
                     }
                 }
             },
@@ -228,6 +242,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     callbacks: {
                         label: function(context) {
                             return context.parsed.y.toLocaleString('fr-FR') + ' €';
+                        }
+                    },
+                    bodyFont: {
+                        family: 'Segoe UI'
+                    }
+                },
+                legend: {
+                    labels: {
+                        font: {
+                            family: 'Segoe UI'
                         }
                     }
                 }
@@ -243,12 +267,12 @@ document.addEventListener('DOMContentLoaded', function() {
         datasets: [{
             data: [@ViewBag.TotalLeadExpense, @ViewBag.TotalTicketExpense],
             backgroundColor: [
-                'rgba(255, 159, 64, 0.7)',
-                'rgba(153, 102, 255, 0.7)'
+                'rgba(243, 156, 18, 0.7)',
+                'rgba(155, 89, 182, 0.7)'
             ],
             borderColor: [
-                'rgba(255, 159, 64, 1)',
-                'rgba(153, 102, 255, 1)'
+                'rgba(243, 156, 18, 1)',
+                'rgba(155, 89, 182, 1)'
             ],
             borderWidth: 1
         }]
@@ -263,12 +287,20 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 legend: {
                     position: 'right',
+                    labels: {
+                        font: {
+                            family: 'Segoe UI'
+                        }
+                    }
                 },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
                             return context.label + ': ' + context.raw.toLocaleString('fr-FR') + ' €';
                         }
+                    },
+                    bodyFont: {
+                        family: 'Segoe UI'
                     }
                 }
             },
@@ -279,139 +311,208 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-    /* Conteneur principal des stats */
-    .stats-container {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin: 20px auto;
-        flex-wrap: wrap;
-    }
+/* Base Styles */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --info-color: #2980b9;
+    --dark-color: #34495e;
+    --light-color: #ecf0f1;
+    --white: #ffffff;
+    --gray-light: #bdc3c7;
+    --gray-dark: #7f8c8d;
+    --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --border-radius: 8px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
 
-    /* Style des cartes */
-    .stat-box {
-        width: 200px;
-        height: 150px;
-        text-align: center;
-        padding: 20px;
-        border-radius: 8px;
-        color: white;
-        font-family: 'Arial', sans-serif;
-        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-    }
+body {
+    font-family: var(--font-primary);
+    color: var(--secondary-color);
+    background-color: #f5f7fa;
+    line-height: 1.6;
+    padding: 20px;
+}
 
-    .stat-box:hover {
-        transform: scale(1.03);
-        box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
-    }
+h1 {
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
 
-    /* Icônes */
-    .stat-box i {
-        font-size: 26px;
-    }
+/* Stats Container */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
 
-    .title {
-        font-size: 14px;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
+/* Stat Cards */
+.stat-box {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-top: 4px solid transparent;
+}
 
-    .count {
-        font-size: 22px;
-        font-weight: bold;
-    }
+.stat-box:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
 
-    /* Couleurs professionnelles */
-    .clients { background: linear-gradient(135deg, #2c3e50, #4a6072); }
-    .leads { background: linear-gradient(135deg, #4b0082, #6a5acd); }
-    .tickets { background: linear-gradient(135deg, #1e3c72, #2a5298); }
-    .budget { background: linear-gradient(135deg, #27ae60, #2ecc71); }
-    .lead-expense { background: linear-gradient(135deg, #f39c12, #f1c40f); }
-    .ticket-expense { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
-    .balance { background: linear-gradient(135deg, #3498db, #2980b9); }
+.stat-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+}
 
-    /* Boutons */
-    .btn {
-        padding: 6px 14px;
-        border-radius: 6px;
-        font-weight: bold;
-        text-decoration: none;
-        display: inline-block;
-        color: white;
-        transition: background 0.3s ease-in-out, transform 0.2s;
-        font-size: 12px;
-    }
+.stat-box i {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: currentColor;
+}
 
-    .clients.btn { background: #34495e; }
-    .leads.btn { background: #483d8b; }
-    .tickets.btn { background: #2a3f5f; }
-    .budget.btn { background: #16a085; }
-    .lead-expense.btn { background: #f39c12; }
-    .ticket-expense.btn { background: #8e44ad; }
+.stat-box .title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray-dark);
+    margin-bottom: 5px;
+}
 
-    .btn:hover {
-        transform: translateY(-2px);
-        opacity: 0.9;
-    }
+.stat-box .count {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+}
 
-    /* Style pour les conteneurs de graphiques */
-    .chart-container {
-        max-width: 1000px;
-        margin: 30px auto;
-        padding: 0 20px;
-    }
+/* Card Colors */
+.clients {
+    border-top-color: var(--primary-color);
+    color: var(--primary-color);
+}
 
-    .chart-card {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        margin-bottom: 30px;
-    }
+.leads {
+    border-top-color: #9b59b6;
+    color: #9b59b6;
+}
 
-    .chart-header {
-        background: linear-gradient(135deg, #3498db, #2c3e50);
-        color: white;
-        padding: 15px 20px;
-    }
+.tickets {
+    border-top-color: var(--info-color);
+    color: var(--info-color);
+}
 
-    .chart-header h3 {
-        margin: 0;
-        font-size: 18px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
+.budget {
+    border-top-color: var(--success-color);
+    color: var(--success-color);
+}
 
-    .chart-header i {
-        font-size: 20px;
-    }
+.lead-expense {
+    border-top-color: var(--warning-color);
+    color: var(--warning-color);
+}
 
-    .chart-body {
-        padding: 20px;
-        height: 400px;
-        position: relative;
-    }
+.ticket-expense {
+    border-top-color: #8e44ad;
+    color: #8e44ad;
+}
 
-    /* Responsive design */
-    @@media (max-width: 768px) {
-        .stats-container {
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .stat-box {
-            width: 80%;
-            margin-bottom: 15px;
-        }
-        
-        .chart-body {
-            height: 300px;
-        }
-    }
+.balance {
+    border-top-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+    text-decoration: none;
+    transition: var(--transition);
+    background-color: transparent;
+    border: 1px solid currentColor;
+    color: currentColor;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+}
+
+.btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Chart Containers */
+.chart-container {
+    margin: 30px 0;
+}
+
+.chart-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 30px;
+    transition: var(--transition);
+}
+
+.chart-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.chart-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--white);
+    padding: 18px 25px;
+    display: flex;
+    align-items: center;
+}
+
+.chart-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.chart-header i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.chart-body {
+    padding: 20px;
+    height: 400px;
+    position: relative;
+}
+
+/* Responsive Design */
+
+}
 </style>

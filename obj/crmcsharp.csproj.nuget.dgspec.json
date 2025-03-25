@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\EvalDash\\C#\\crmcsharp.csproj": {}
+    "C:\\Users\\Raina\\Documents\\GitHub\\crmencsharp\\crmcsharp.csproj": {}
   },
   "projects": {
-    "D:\\EvalDash\\C#\\crmcsharp.csproj": {
+    "C:\\Users\\Raina\\Documents\\GitHub\\crmencsharp\\crmcsharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\EvalDash\\C#\\crmcsharp.csproj",
+        "projectUniqueName": "C:\\Users\\Raina\\Documents\\GitHub\\crmencsharp\\crmcsharp.csproj",
         "projectName": "crmcsharp",
-        "projectPath": "D:\\EvalDash\\C#\\crmcsharp.csproj",
-        "packagesPath": "C:\\Users\\Fifaliana\\.nuget\\packages\\",
-        "outputPath": "D:\\EvalDash\\C#\\obj\\",
+        "projectPath": "C:\\Users\\Raina\\Documents\\GitHub\\crmencsharp\\crmcsharp.csproj",
+        "packagesPath": "C:\\Users\\Raina\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Raina\\Documents\\GitHub\\crmencsharp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Fifaliana\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Raina\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -32,13 +32,7 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
         "net6.0": {
@@ -63,19 +57,19 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.36, 6.0.36]"
+              "version": "[6.0.15, 6.0.15]"
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[6.0.36, 6.0.36]"
+              "version": "[6.0.15, 6.0.15]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.36, 6.0.36]"
+              "version": "[6.0.15, 6.0.15]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[6.0.36, 6.0.36]"
+              "version": "[6.0.15, 6.0.15]"
             }
           ],
           "frameworkReferences": {
@@ -86,7 +80,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
