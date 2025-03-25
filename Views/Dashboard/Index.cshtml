@@ -1,0 +1,417 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Dashboard</h1>
+
+<div class="stats-container">
+    <div class="stat-box clients">
+        <i class="fas fa-users"></i>
+        <span class="title">Clients</span>
+        <span class="count">@ViewBag.CustomerCount</span>
+        <a href="@Url.Action("Details", new { type = "customers" })" class="btn clients">Voir les clients</a>
+    </div>
+
+    <div class="stat-box leads">
+        <i class="fas fa-bullhorn"></i>
+        <span class="title">Leads</span>
+        <span class="count">@ViewBag.LeadCount</span>
+        <a href="@Url.Action("Details", new { type = "leads" })" class="btn leads">Voir les leads</a>
+    </div>
+
+    <div class="stat-box tickets">
+        <i class="fas fa-ticket-alt"></i>
+        <span class="title">Tickets</span>
+        <span class="count">@ViewBag.TicketCount</span>
+        <a href="@Url.Action("Details", new { type = "tickets" })" class="btn tickets">Voir les tickets</a>
+    </div>
+
+    <div class="stat-box budget">
+        <i class="fas fa-dollar-sign"></i>
+        <span class="title">Budget Total</span>
+        <span class="count">@ViewBag.TotalBudget.ToString("C")</span>
+        <a href="@Url.Action("Details", new { type = "budgets" })" class="btn budget">Voir les budgets</a>
+    </div>
+
+    <div class="stat-box lead-expense">
+        <i class="fas fa-money-bill-alt"></i>
+        <span class="title">Dépenses Leads</span>
+        <span class="count">@ViewBag.TotalLeadExpense.ToString("C")</span>
+        <a href="@Url.Action("Details", new { type = "lead-expenses" })" class="btn lead-expense">Voir les dépenses</a>
+    </div>
+
+    <div class="stat-box ticket-expense">
+        <i class="fas fa-receipt"></i>
+        <span class="title">Dépenses Tickets</span>
+        <span class="count">@ViewBag.TotalTicketExpense.ToString("C")</span>
+        <a href="@Url.Action("Details", new { type = "ticket-expenses" })" class="btn ticket-expense">Voir les dépenses</a>
+    </div>
+
+    <div class="stat-box balance">
+        <i class="fas fa-balance-scale"></i>
+        <span class="title">Difference</span>
+        <span class="count">@ViewBag.BudgetBalance.ToString("C")</span>
+    </div>
+</div>
+
+<!-- Section pour le graphique des priorités de tickets -->
+<div class="chart-container">
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3><i class="fas fa-chart-pie"></i> Répartition des tickets par priorité</h3>
+        </div>
+        <div class="chart-body">
+            <canvas id="priorityChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Section pour le graphique d'évolution du budget -->
+<div class="chart-container">
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3><i class="fas fa-chart-line"></i> Évolution mensuelle du budget</h3>
+        </div>
+        <div class="chart-body">
+            <canvas id="budgetChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Section pour le graphique des dépenses par catégorie -->
+<div class="chart-container">
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3><i class="fas fa-chart-bar"></i> Répartition des dépenses</h3>
+        </div>
+        <div class="chart-body">
+            <canvas id="expensesChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Inclure Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Graphique circulaire des priorités
+    var priorityCtx = document.getElementById('priorityChart').getContext('2d');
+    
+    // Données pour le graphique des priorités
+    var priorityLabels = [];
+    var priorityData = [];
+    
+    var priorityColors = {
+        'low': '#27ae60',
+        'medium': '#f39c12',
+        'high': '#e74c3c',
+        'urgent': '#9b59b6',
+        'critical': '#c0392b',
+        'unknown': '#7f8c8d'
+    };
+
+    @if (ViewBag.PriorityStats != null)
+    {
+        foreach (var stat in ViewBag.PriorityStats)
+        {
+            <text>
+            priorityLabels.push('@stat.Priority');
+            priorityData.push(@stat.Count);
+            </text>
+        }
+    }
+
+    new Chart(priorityCtx, {
+        type: 'pie',
+        data: {
+            labels: priorityLabels,
+            datasets: [{
+                data: priorityData,
+                backgroundColor: priorityLabels.map(label => priorityColors[label.toLowerCase()] || priorityColors['unknown']),
+                borderWidth: 1,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        font: {
+                            size: 12,
+                            family: 'Arial'
+                        },
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            var label = context.label || '';
+                            var value = context.raw || 0;
+                            var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            var percentage = Math.round((value / total) * 100);
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            cutout: '60%',
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    });
+
+    // Graphique à barres pour l'évolution du budget
+    var budgetCtx = document.getElementById('budgetChart').getContext('2d');
+    
+    // Données pour le graphique du budget
+    var budgetMonths = [];
+    var budgetAmounts = [];
+    
+    @if (ViewBag.BudgetEvolution != null)
+    {
+        foreach (var item in ViewBag.BudgetEvolution)
+        {
+            <text>
+            budgetMonths.push('@item.Month');
+            budgetAmounts.push(@item.Amount);
+            </text>
+        }
+    }
+
+    new Chart(budgetCtx, {
+        type: 'bar',
+        data: {
+            labels: budgetMonths,
+            datasets: [{
+                label: 'Budget',
+                data: budgetAmounts,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Montant (€)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString('fr-FR') + ' €';
+                        }
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Mois'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.parsed.y.toLocaleString('fr-FR') + ' €';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Graphique des dépenses par catégorie
+    var expensesCtx = document.getElementById('expensesChart').getContext('2d');
+    
+    var expensesData = {
+        labels: ['Dépenses Leads', 'Dépenses Tickets'],
+        datasets: [{
+            data: [@ViewBag.TotalLeadExpense, @ViewBag.TotalTicketExpense],
+            backgroundColor: [
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(153, 102, 255, 0.7)'
+            ],
+            borderColor: [
+                'rgba(255, 159, 64, 1)',
+                'rgba(153, 102, 255, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+
+    new Chart(expensesCtx, {
+        type: 'doughnut',
+        data: expensesData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.raw.toLocaleString('fr-FR') + ' €';
+                        }
+                    }
+                }
+            },
+            cutout: '60%'
+        }
+    });
+});
+</script>
+
+<style>
+    /* Conteneur principal des stats */
+    .stats-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 20px auto;
+        flex-wrap: wrap;
+    }
+
+    /* Style des cartes */
+    .stat-box {
+        width: 200px;
+        height: 150px;
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        color: white;
+        font-family: 'Arial', sans-serif;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .stat-box:hover {
+        transform: scale(1.03);
+        box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Icônes */
+    .stat-box i {
+        font-size: 26px;
+    }
+
+    .title {
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .count {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    /* Couleurs professionnelles */
+    .clients { background: linear-gradient(135deg, #2c3e50, #4a6072); }
+    .leads { background: linear-gradient(135deg, #4b0082, #6a5acd); }
+    .tickets { background: linear-gradient(135deg, #1e3c72, #2a5298); }
+    .budget { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+    .lead-expense { background: linear-gradient(135deg, #f39c12, #f1c40f); }
+    .ticket-expense { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+    .balance { background: linear-gradient(135deg, #3498db, #2980b9); }
+
+    /* Boutons */
+    .btn {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+        color: white;
+        transition: background 0.3s ease-in-out, transform 0.2s;
+        font-size: 12px;
+    }
+
+    .clients.btn { background: #34495e; }
+    .leads.btn { background: #483d8b; }
+    .tickets.btn { background: #2a3f5f; }
+    .budget.btn { background: #16a085; }
+    .lead-expense.btn { background: #f39c12; }
+    .ticket-expense.btn { background: #8e44ad; }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    /* Style pour les conteneurs de graphiques */
+    .chart-container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .chart-header {
+        background: linear-gradient(135deg, #3498db, #2c3e50);
+        color: white;
+        padding: 15px 20px;
+    }
+
+    .chart-header h3 {
+        margin: 0;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .chart-header i {
+        font-size: 20px;
+    }
+
+    .chart-body {
+        padding: 20px;
+        height: 400px;
+        position: relative;
+    }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .stats-container {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-box {
+            width: 80%;
+            margin-bottom: 15px;
+        }
+        
+        .chart-body {
+            height: 300px;
+        }
+    }
+</style>

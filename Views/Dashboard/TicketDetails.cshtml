@@ -1,0 +1,133 @@
+@model List<crmcsharp.Entities.Ticket>
+@{
+    ViewData["Title"] = "Détails des tickets";
+}
+
+<h1>Détails des tickets</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Sujet</th>
+            <th>Description</th>
+            <th>Priorité</th>
+            <th>Statut</th>
+            <th>Date de création</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>@ticket.TicketId</td>
+                <td>@ticket.Subject</td>
+                <td>@(ticket.Description ?? "Aucune description")</td>
+                <td>
+                    <span class="badge @GetPriorityBadgeClass(ticket.Priority)">
+                        @ticket.Priority
+                    </span>
+                </td>
+                <td>
+                    <span class="badge @GetStatusBadgeClass(ticket.Status)">
+                        @ticket.Status
+                    </span>
+                </td>
+                <td>@ticket.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">Retour au dashboard</a>
+
+@functions {
+    public string GetPriorityBadgeClass(string priority)
+    {
+        return priority?.ToLower() switch
+        {
+            "low" => "bg-success",
+            "medium" => "bg-warning",
+            "high" => "bg-danger",
+            "urgent" => "bg-danger",
+            "critical" => "bg-dark",
+            _ => "bg-secondary"
+        };
+    }
+
+    public string GetStatusBadgeClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "open" => "bg-primary",
+            "assigned" => "bg-info",
+            "in-progress" => "bg-info text-dark",
+            "resolved" => "bg-success",
+            "closed" => "bg-secondary",
+            "reopened" => "bg-warning",
+            "pending-customer-response" => "bg-warning text-dark",
+            "escalated" => "bg-danger",
+            _ => "bg-light text-dark"
+        };
+    }
+}
+
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+    
+    .table th {
+        background-color: #f8f9fa;
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+        padding: 0.75rem;
+        text-align: left;
+    }
+    
+    .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 0.35em 0.65em;
+        font-size: 0.75em;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+        text-transform: capitalize;
+    }
+    
+    .bg-primary { background-color: #0d6efd; }
+    .bg-secondary { background-color: #6c757d; }
+    .bg-success { background-color: #198754; }
+    .bg-danger { background-color: #dc3545; }
+    .bg-warning { background-color: #ffc107; color: #000 !important; }
+    .bg-info { background-color: #0dcaf0; }
+    .bg-light { background-color: #f8f9fa; }
+    .bg-dark { background-color: #212529; }
+    
+    .btn-secondary {
+        color: #fff;
+        background-color: #6c757d;
+        border-color: #6c757d;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5c636a;
+        border-color: #565e64;
+    }
+</style>

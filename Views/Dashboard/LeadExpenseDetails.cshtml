@@ -1,0 +1,177 @@
+@* @model List<crmcsharp.Entities.LeadExpense>
+@{
+    ViewData["Title"] = "Détails des Dépenses de Leads";
+}
+
+<h1>Détails des Dépenses de Leads</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Montant</th>
+                <th>Date de Création</th>
+                <th>ID Lead Histo</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var expense in Model)
+            {
+                <tr>
+                    <td>@expense.Id</td>
+                    <td>@expense.Amount.ToString("C")</td>
+                    <td>@expense.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@expense.TriggerLeadHistoId</td>
+                    <td>
+                        <a href="@Url.Action("Edit", "LeadExpense", new { id = expense.Id })" class="btn btn-sm btn-primary">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        <a href="@Url.Action("Delete", "LeadExpense", new { id = expense.Id })" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-3">
+    <a href="@Url.Action("Index", "Dashboard")" class="btn btn-secondary">
+       </i> Retour au Dashboard
+    </a>
+</div>
+
+<style>
+    .table-responsive {
+        margin-bottom: 20px;
+    }
+    
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .table th {
+        background-color: #343a40;
+        color: white;
+        padding: 12px;
+        text-align: left;
+    }
+    
+    .table td {
+        padding: 12px;
+        border-bottom: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+    
+    .table tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn i {
+        margin-right: 5px;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+} *@
+
+@model List<crmcsharp.Entities.LeadExpense>
+@{
+    ViewData["Title"] = "Détails des Dépenses de Leads";
+}
+
+<h1>Détails des Dépenses de Leads</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Montant</th>
+                <th>Date de Création</th>
+                <th>ID Lead Histo</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var expense in Model)
+            {
+                <tr>
+                    <td>@expense.Id</td>
+                    <td>@expense.Amount.ToString("C")</td>
+                    <td>@expense.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@expense.TriggerLeadHistoId</td>
+                    <td>
+                        <a href="@Url.Action("Edit", "LeadExpense", new { id = expense.Id })" class="btn btn-sm btn-primary">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                        <form asp-action="DeleteLeadExpense" asp-controller="Dashboard" method="post" style="display: inline;">
+                            <input type="hidden" name="id" value="@expense.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?');">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-3">
+ 
+    <a href="@Url.Action("Index", "Dashboard")" class="btn btn-secondary">
+        > Retour au Dashboard
+    </a>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+}
+
+<style>
+    .table-responsive {
+        margin-bottom: 20px;
+    }
+    
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .table th {
+        background-color: #343a40;
+        color: white;
+        padding: 12px;
+        text-align: left;
+    }
+    
+    .table td {
+        padding: 12px;
+        border-bottom: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+    
+    .table tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn i {
+        margin-right: 5px;
+    }
+</style>

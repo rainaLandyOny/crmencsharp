@@ -1,0 +1,31 @@
+@model List<crmcsharp.Entities.Budget>
+
+@{
+    ViewData["Title"] = "Détails des Budgets";
+}
+
+<h2>Détails des Budgets</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Montant</th>
+            <th>Date de création</th>
+            <th>ID Client</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var budget in Model)
+        {
+            <tr>
+                <td>@budget.BudgetId</td>
+                <td>@budget.Amount.ToString("C")</td>
+                <td>@budget.CreatedAt?.ToString("dd/MM/yyyy")</td>
+                <td>@budget.CustomerId</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Dashboard")" class="btn btn-secondary">Retour</a>

@@ -1,0 +1,29 @@
+
+
+@{
+    ViewData["Title"] = "Détails des clients";
+}
+
+<h1>Détails des clients</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td>@customer.CustomerId</td>
+                <td>@customer.Name</td>
+                <td>@customer.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">Retour au dashboard</a>

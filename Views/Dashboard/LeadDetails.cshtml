@@ -1,0 +1,119 @@
+@model List<crmcsharp.Entities.Lead>
+@{
+    ViewData["Title"] = "Détails des leads";
+}
+
+<h1>Détails des leads</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Téléphone</th>
+                <th>Statut</th>
+                <th>ID Réunion</th>
+                <th>Google Drive</th>
+                <th>Date de création</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var lead in Model)
+            {
+                <tr>
+                    <td>@lead.LeadId</td>
+                    <td>@lead.Name</td>
+                    <td>@lead.Phone</td>
+                    <td>
+                        <span class="badge @GetStatusBadgeClass(lead.Status)">
+                            @lead.Status
+                        </span>
+                    </td>
+                    <td>@lead.MeetingId</td>
+                    <td>
+                        @if (lead.GoogleDrive == true)
+                        {
+                            <span class="badge bg-success">Oui</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Non</span>
+                        }
+                    </td>
+                    <td>@lead.CreatedAt.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">
+    </i> Retour au dashboard
+</a>
+
+@functions {
+    public string GetStatusBadgeClass(string? status)
+    {
+        return status?.ToLower() switch
+        {
+            "meeting-to-schedule" => "bg-warning",
+            "scheduled" => "bg-info",
+            "archived" => "bg-secondary",
+            "success" => "bg-success",
+            "assign-to-sales" => "bg-primary",
+            _ => "bg-light text-dark"
+        };
+    }
+}
+
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .table th {
+        background-color: #343a40;
+        color: white;
+        padding: 12px;
+        text-align: left;
+    }
+    
+    .table td {
+        padding: 12px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .badge {
+        padding: 0.35em 0.65em;
+        font-size: 0.75em;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+        text-transform: capitalize;
+    }
+    
+    .bg-primary { background-color: #0d6efd; }
+    .bg-secondary { background-color: #6c757d; }
+    .bg-success { background-color: #198754; }
+    .bg-info { background-color: #0dcaf0; }
+    .bg-warning { background-color: #ffc107; color: #000; }
+    .bg-light { background-color: #f8f9fa; color: #000; }
+    
+    .btn {
+        margin-top: 20px;
+        padding: 8px 16px;
+    }
+    
+    .btn i {
+        margin-right: 5px;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+}
