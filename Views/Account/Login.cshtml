@@ -5,158 +5,276 @@
     ViewBag.Title = "Login";
 }
 
-<style>
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Couleurs */
+            --primary: #3f51b5;
+            --primary-dark: #303f9f;
+            --primary-light: #c5cae9;
+            --accent: #ff4081;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --divider: #e0e0e0;
+            --white: #ffffff;
+            --error: #f44336;
+            --success: #4caf50;
+            --background: #f5f5f5;
+            
+            /* Espacements */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            
+            /* Typographie */
+            --font-size-sm: 0.875rem;
+            --font-size-md: 1rem;
+            --font-size-lg: 1.25rem;
+            --font-size-xl: 1.5rem;
+            
+            /* Bordures */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Ombre */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 20px rgba(0,0,0,0.1);
+            
+            /* Transition */
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
-    .login-container {
-        background-color: #ffffff;
-        padding: 40px 30px;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 420px;
-        transition: transform 0.3s ease;
-    }
+        /* Reset et base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .login-container:hover {
-        transform: translateY(-5px);
-    }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: var(--space-md);
+        }
 
-    .login-container h2 {
-        margin-bottom: 10px;
-        font-weight: 700;
-        color: #2c3e50;
-        text-align: center;
-        font-size: 28px;
-    }
+        /* Carte de connexion */
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: var(--transition);
+        }
 
-    .login-container p {
-        text-align: center;
-        color: #7f8c8d;
-        font-size: 15px;
-        margin-bottom: 30px;
-        line-height: 1.5;
-    }
+        .login-card:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
 
-    .form-group {
-        margin-bottom: 25px;
-    }
+        /* En-tête */
+        .card-header {
+            background: var(--primary);
+            color: var(--white);
+            padding: var(--space-xl);
+            text-align: center;
+        }
 
-    .form-group label {
-        font-weight: 600;
-        margin-bottom: 8px;
-        display: block;
-        color: #34495e;
-        font-size: 14px;
-    }
+        .card-header h1 {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
 
-    .form-group input {
-        width: 100%;
-        padding: 12px 15px;
-        border: 2px solid #e0e6ed;
-        border-radius: 8px;
-        font-size: 15px;
-        transition: all 0.3s ease;
-        background-color: #f8fafc;
-    }
+        .card-header p {
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+        }
 
-    .form-group input:focus {
-        border-color: #3498db;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        background-color: #fff;
-    }
+        /* Corps */
+        .card-body {
+            padding: var(--space-xl);
+        }
 
-    .text-danger {
-        font-size: 13px;
-        color: #e74c3c;
-        margin-top: 5px;
-        display: block;
-    }
+        /* Logo */
+        .brand {
+            display: flex;
+            justify-content: center;
+            margin-bottom: var(--space-lg);
+        }
 
-    input[type="submit"] {
-        background: linear-gradient(to right, #3498db, #2c80c9);
-        color: white;
-        border: none;
-        padding: 14px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 8px;
-        width: 100%;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
-        margin-top: 10px;
-    }
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            border-radius: 50%;
+            color: var(--white);
+            font-size: 1.5rem;
+        }
 
-    input[type="submit"]:hover {
-        background: linear-gradient(to right, #2c80c9, #3498db);
-        box-shadow: 0 6px 8px rgba(52, 152, 219, 0.3);
-        transform: translateY(-2px);
-    }
+        /* Formulaire */
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
 
-    .footer-text {
-        margin-top: 30px;
-        font-size: 13px;
-        text-align: center;
-        color: #95a5a6;
-    }
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+        }
 
-    .logo {
-        text-align: center;
-        margin-bottom: 20px;
-    }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem var(--space-md);
+            border: 1px solid var(--divider);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-md);
+            transition: var(--transition);
+            background-color: rgba(245, 245, 245, 0.5);
+        }
 
-    .logo img {
-        height: 50px;
-    }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+            background-color: var(--white);
+        }
 
-    .forgot-password {
-        text-align: right;
-        margin-top: -15px;
-        margin-bottom: 20px;
-    }
+        /* Validation */
+        .validation-message {
+            display: block;
+            margin-top: var(--space-xs);
+            font-size: var(--font-size-sm);
+            color: var(--error);
+        }
 
-    .forgot-password a {
-        color: #7f8c8d;
-        font-size: 13px;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
+        /* Bouton */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.875rem var(--space-md);
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: var(--space-sm);
+        }
 
-    .forgot-password a:hover {
-        color: #3498db;
-    }
-</style>
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
 
-<div class="login-container">
-    <h2>Connexion</h2>
-    <p>Veuillez entrer vos identifiants pour accéder à votre tableau de bord CRM.</p>
+        .btn:active {
+            transform: translateY(0);
+        }
 
-    <form asp-action="Login" method="post">
-        <div class="form-group">
-            <label asp-for="Username">Nom d'utilisateur</label>
-            <input asp-for="Username" type="text" />
-            <span asp-validation-for="Username" class="text-danger"></span>
+        /* Lien mot de passe oublié */
+        .forgot-password {
+            text-align: right;
+            margin-top: calc(-1 * var(--space-sm));
+            margin-bottom: var(--space-md);
+        }
+
+        .forgot-password a {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .forgot-password a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        /* Pied de page */
+        .card-footer {
+            padding: var(--space-md) var(--space-xl);
+            text-align: center;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            border-top: 1px solid var(--divider);
+        }
+
+  
+
+        .login-card {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* Responsive */
+
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="card-header">
+            <h1>CRM CSharp</h1>
+            <p>Plateforme de gestion de la relation client</p>
+        </div>
+        
+        <div class="card-body">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="currentColor"/>
+                        <path d="M12 6C8.69 6 6 8.69 6 12C6 15.31 8.69 18 12 18C15.31 18 18 15.31 18 12C18 8.69 15.31 6 12 6ZM11 16.5V17H13V16.5C14.93 16.18 16.5 14.55 16.5 12.5H16C16 14.16 14.66 15.5 13 15.5H11V14H13C13.83 14 14.5 13.33 14.5 12.5C14.5 11.67 13.83 11 13 11H11V7H13C14.66 11 16 12.34 16 14V14.5H16.5C16.5 10.36 13.14 7 9 7V7.5C11.05 7.5 12.68 9.07 13 11H12.5C12.5 10.17 11.83 9.5 11 9.5H9.5V14.5H11V16.5Z" fill="currentColor"/>
+                    </svg>
+                </div>
+            </div>
+
+            <form asp-action="Login" method="post">
+                <div class="form-group">
+                    <label class="form-label" asp-for="Username">Identifiant</label>
+                    <input class="form-control" asp-for="Username" type="text" placeholder="Saisissez votre identifiant" />
+                    <span asp-validation-for="Username" class="validation-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Password">Mot de passe</label>
+                    <input class="form-control" asp-for="Password" type="password" placeholder="••••••••" />
+                    <span asp-validation-for="Password" class="validation-message"></span>
+                </div>
+
+        
+
+                <button type="submit" class="btn">
+                    <span>Se connecter</span>
+                </button>
+            </form>
         </div>
 
-        <div class="form-group">
-            <label asp-for="Password">Mot de passe</label>
-            <input asp-for="Password" type="password" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
-
-        <input type="submit" value="Se connecter" />
-    </form>
-
-    <div class="footer-text">
-        © 2025 - CRM CSharp. Tous droits réservés.
+   
     </div>
-</div>
+</body>
+</html>
